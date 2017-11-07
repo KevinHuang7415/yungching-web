@@ -7,17 +7,28 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using yungching_web.Models;
+using yungching_web.Repository;
 
 namespace yungching_web.Controllers
 {
     public class CustomersController : Controller
     {
-        private NorthwindEntities db = new NorthwindEntities();
+        private IRepository<Customer> repo;
+
+        public CustomersController()
+            : this(new Repository<Customer>(new NorthwindEntities()))
+        {
+        }
+
+        public CustomersController(IRepository<Customer> repo)
+        {
+            this.repo = repo;
+        }
 
         // GET: Customers
         public ActionResult Index()
         {
-            return View(db.Customers.ToList());
+            return View(repo.Reads());
         }
 
         // GET: Customers/Details/5
@@ -27,7 +38,7 @@ namespace yungching_web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid CustomerID");
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.Read(x => x.CustomerID == id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -60,8 +71,8 @@ namespace yungching_web.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customer);
-                db.SaveChanges();
+                repo.Create(customer);
+                repo.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -75,7 +86,7 @@ namespace yungching_web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid CustomerID");
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.Read(x => x.CustomerID == id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -92,8 +103,8 @@ namespace yungching_web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
+                repo.Update(customer);
+                repo.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -106,7 +117,7 @@ namespace yungching_web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid CustomerID");
             }
-            Customer customer = db.Customers.Find(id);
+            Customer customer = repo.Read(x => x.CustomerID == id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -119,19 +130,10 @@ namespace yungching_web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            Customer customer = db.Customers.Find(id);
-            db.Customers.Remove(customer);
-            db.SaveChanges();
+            Customer customer = repo.Read(x => x.CustomerID == id);
+            repo.Delete(customer);
+            repo.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }
