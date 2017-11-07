@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 
 namespace yungching_web.Repository
 {
-
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
@@ -67,6 +64,7 @@ namespace yungching_web.Repository
                 Context.Configuration.ValidateOnSaveEnabled = true;
             }
         }
+
         public void Dispose()
         {
             Dispose(true);

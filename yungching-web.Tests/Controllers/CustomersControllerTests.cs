@@ -1,14 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using yungching_web.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using System.Web.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using yungching_web.Controllers;
 using yungching_web.Models;
 using yungching_web.Repository;
-using System.Linq.Expressions;
 
 namespace yungching_web.Controllers.Tests
 {
@@ -133,7 +131,7 @@ namespace yungching_web.Controllers.Tests
     }
 
     public class FakeRepository
-        :IRepository<Customer>
+        : IRepository<Customer>
     {
         private List<Customer> data;
 
