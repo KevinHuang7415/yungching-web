@@ -1,7 +1,38 @@
-﻿@{
-    ViewBag.Title = "About";
-}
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+﻿@model IEnumerable<yungching_web.ViewModels.CustomersTitle>
 
-<p>Use this area to provide additional information.</p>
+@{
+    ViewBag.Title = "Customers Title Statistics";
+}
+
+<h2>Customers Title Statistics</h2>
+
+<table>
+    <tr>
+        <th>
+            Customers Title
+        </th>
+        <th>
+            Count
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactTitle)
+            </td>
+            <td>
+                @item.ContactTitleCount
+            </td>
+        </tr>
+    }
+    <tr>
+        <th>
+            @Model.Count() Titles
+        </th>
+        <th>
+            @Model.Sum(item => item.ContactTitleCount) Customers
+        </th>
+    </tr>
+</table>
