@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using yungching_web.Controllers;
 using yungching_web.Models;
 using yungching_web.Repository;
+using yungching_web.Tests.Repository;
 
 namespace yungching_web.Controllers.Tests
 {
@@ -34,7 +31,7 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var result = controller.Details(TestData.Id) as ViewResult;
+            var result = controller.Details(TestData1.Id) as ViewResult;
             var customer = result.ViewData.Model as Customer;
 
             // Assert
@@ -62,10 +59,10 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var result = controller.Create(TestData.customer) as ViewResult;
+            var result = controller.Create(TestData2.customer) as ViewResult;
 
             // Assert
-            var createdData = repo.Read(data => data.CustomerID == TestData.Id2);
+            var createdData = repo.Read(data => data.CustomerID == TestData2.Id);
             Assert.AreEqual("kevin", createdData.ContactName);
         }
 
@@ -77,7 +74,7 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var result = controller.Edit(TestData.Id) as ViewResult;
+            var result = controller.Edit(TestData1.Id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -91,12 +88,12 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var customer = repo.Read(data => data.CustomerID == TestData.Id);
+            var customer = repo.Read(data => data.CustomerID == TestData1.Id);
             customer.ContactName = "Kelvin";
             var result = controller.Edit(customer) as ViewResult;
 
             // Assert
-            customer = repo.Read(data => data.CustomerID == TestData.Id);
+            customer = repo.Read(data => data.CustomerID == TestData1.Id);
             Assert.AreEqual("Kelvin", customer.ContactName);
         }
 
@@ -108,7 +105,7 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var result = controller.Delete(TestData.Id) as ViewResult;
+            var result = controller.Delete(TestData1.Id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -122,100 +119,11 @@ namespace yungching_web.Controllers.Tests
             var controller = new CustomersController(repo);
 
             // Act
-            var result = controller.DeleteConfirmed(TestData.Id) as ViewResult;
+            var result = controller.DeleteConfirmed(TestData1.Id) as ViewResult;
 
             // Assert
-            var deletedData = repo.Read(data => data.CustomerID == TestData.Id);
+            var deletedData = repo.Read(data => data.CustomerID == TestData1.Id);
             Assert.AreEqual(null, deletedData);
         }
-    }
-
-    public class FakeRepository
-        : IRepository<Customer>
-    {
-        private List<Customer> data;
-
-        public FakeRepository()
-        {
-            data = new List<Customer>
-            {
-                new Customer()
-                {
-                    CustomerID = TestData.Id,
-                    CompanyName = "Yungching",
-                    ContactName = "Kevin",
-                    ContactTitle = "Software Engineer",
-                    Address = "HOME",
-                    City = "Taoyuan",
-                    Region = "",
-                    PostalCode = "12345",
-                    Country = "Taiwan",
-                    Phone = "0912345678",
-                    Fax = "",
-                }
-            };
-        }
-
-        public void Create(Customer entity)
-        {
-            data.Add(entity);
-        }
-
-        public Customer Read(Expression<Func<Customer, bool>> predicate)
-        {
-            return data.AsQueryable().Where(predicate).FirstOrDefault();
-        }
-
-        public IQueryable<Customer> Reads()
-        {
-            return data.AsQueryable();
-        }
-
-        public void Update(Customer entity)
-        {
-            int index = Find(entity.CustomerID);
-            if (index != -1)
-            {
-                data[index] = entity;
-            }
-        }
-
-        public void Delete(Customer entity)
-        {
-            int index = Find(entity.CustomerID);
-            if (index != -1)
-            {
-                data.RemoveAt(index);
-            }
-        }
-
-        public void SaveChanges()
-        { }
-
-        private int Find(string id)
-        {
-            return data.FindIndex(item => item.CustomerID == id);
-        }
-    }
-
-    struct TestData
-    {
-        public static String Id { get; } = "EDCBA";
-        public static String Id2 { get; } = "ABCDE";
-
-        public static Customer customer { get; } = new Customer()
-        {
-            CustomerID = Id2,
-            CompanyName = "yungching",
-            ContactName = "kevin",
-            ContactTitle = "software engineer",
-            Address = "home",
-            City = "taoyuan",
-            Region = "",
-            PostalCode = "12345",
-            Country = "taiwan",
-            Phone = "0912345678",
-            Fax = "",
-        };
     }
 }
