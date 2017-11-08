@@ -14,7 +14,7 @@ namespace yungching_web.Controllers.Tests
         public void IndexTest()
         {
             // Arrange
-            var controller = new CustomersController(new FakeRepository());
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Index() as ViewResult;
@@ -27,8 +27,7 @@ namespace yungching_web.Controllers.Tests
         public void DetailsTest()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Details(TestData1.Id) as ViewResult;
@@ -42,7 +41,7 @@ namespace yungching_web.Controllers.Tests
         public void CreateTest()
         {
             // Arrange
-            var controller = new CustomersController(new FakeRepository());
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Create() as ViewResult;
@@ -55,8 +54,7 @@ namespace yungching_web.Controllers.Tests
         public void CreateTest1()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Create(TestData2.customer) as ViewResult;
@@ -70,8 +68,7 @@ namespace yungching_web.Controllers.Tests
         public void EditTest()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Edit(TestData1.Id) as ViewResult;
@@ -84,8 +81,7 @@ namespace yungching_web.Controllers.Tests
         public void EditTest1()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var customer = repo.Read(data => data.CustomerID == TestData1.Id);
@@ -101,8 +97,7 @@ namespace yungching_web.Controllers.Tests
         public void DeleteTest()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.Delete(TestData1.Id) as ViewResult;
@@ -115,8 +110,7 @@ namespace yungching_web.Controllers.Tests
         public void DeleteConfirmedTest()
         {
             // Arrange
-            var repo = new FakeRepository();
-            var controller = new CustomersController(repo);
+            var (repo, controller) = Arrange();
 
             // Act
             var result = controller.DeleteConfirmed(TestData1.Id) as ViewResult;
@@ -124,6 +118,13 @@ namespace yungching_web.Controllers.Tests
             // Assert
             var deletedData = repo.Read(data => data.CustomerID == TestData1.Id);
             Assert.AreEqual(null, deletedData);
+        }
+
+        private (FakeRepository, CustomersController) Arrange()
+        {
+            var repo = new FakeRepository();
+            var controller = new CustomersController(repo);
+            return (repo, controller);
         }
     }
 }
