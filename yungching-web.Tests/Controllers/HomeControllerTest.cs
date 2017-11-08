@@ -1,6 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using yungching_web.Controllers;
+using yungching_web.Tests.Repository;
+using yungching_web.ViewModels;
 
 namespace yungching_web.Tests.Controllers
 {
@@ -11,7 +15,7 @@ namespace yungching_web.Tests.Controllers
         public void Index()
         {
             // Arrange
-            var controller = new HomeController();
+            var controller = new HomeController(new FakeRepository());
 
             // Act
             var result = controller.Index() as ViewResult;
@@ -24,13 +28,14 @@ namespace yungching_web.Tests.Controllers
         public void About()
         {
             // Arrange
-            var controller = new HomeController();
+            var controller = new HomeController(new FakeRepository());
 
             // Act
             var result = controller.About() as ViewResult;
+            var titles = result.ViewData.Model as IEnumerable<CustomersTitle>;
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.AreEqual(1, titles.Count());
         }
     }
 }
